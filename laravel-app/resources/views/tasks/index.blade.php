@@ -13,7 +13,7 @@
     <select name="status" class="rounded-md border border-gray-300 px-3 py-2">
         <option value="">すべてのステータス</option>
         @foreach (\App\Models\Task::statusLabels() as $value => $label)
-            <option value="{{ $value }}" @selected(request('status') === $value)>{{ $label }}</option>
+        <option value="{{ $value }}" @selected(request('status')===$value)>{{ $label }}</option>
         @endforeach
     </select>
     <button type="submit" class="bg-gray-200 text-gray-800 px-4 py-2 rounded-md hover:bg-gray-300">検索</button>
@@ -34,32 +34,32 @@
         </thead>
         <tbody class="divide-y divide-gray-200">
             @forelse ($tasks as $task)
-                <tr class="hover:bg-gray-50">
-                    <td class="px-4 py-3 text-sm text-gray-500">{{ $task->id }}</td>
-                    <td class="px-4 py-3">
-                        <a href="{{ route('tasks.show', $task) }}" class="text-blue-600 hover:underline font-medium">{{ $task->title }}</a>
-                    </td>
-                    <td class="px-4 py-3">
-                        <span class="px-2 py-1 text-xs rounded-full
+            <tr class="hover:bg-gray-50">
+                <td class="px-4 py-3 text-sm text-gray-500">{{ $task->id }}</td>
+                <td class="px-4 py-3">
+                    <a href="{{ route('tasks.show', $task) }}" class="text-blue-600 hover:underline font-medium">{{ $task->title }}</a>
+                </td>
+                <td class="px-4 py-3">
+                    <span class="px-2 py-1 text-xs rounded-full
                             @if($task->status === 'pending') bg-gray-100 text-gray-700
                             @elseif($task->status === 'in_progress') bg-blue-100 text-blue-800
-                            @elseif($task->status === 'approved') bg-amber-100 text-amber-800
+                            @elseif($task->status === 'wait_approval') bg-red-100 text-red-800
                             @else bg-green-100 text-green-800
                             @endif">
-                            {{ \App\Models\Task::statusLabels()[$task->status] }}
-                        </span>
-                    </td>
-                    <td class="px-4 py-3 text-sm">{{ $task->creator->name ?? '-' }}</td>
-                    <td class="px-4 py-3 text-sm">{{ $task->assignee->name ?? '-' }}</td>
-                    <td class="px-4 py-3 text-sm text-gray-500">{{ $task->created_at->format('Y/m/d') }}</td>
-                    <td class="px-4 py-3">
-                        <a href="{{ route('tasks.edit', $task) }}" class="text-sm text-gray-600 hover:text-gray-900">編集</a>
-                    </td>
-                </tr>
+                        {{ \App\Models\Task::statusLabels()[$task->status] }}
+                    </span>
+                </td>
+                <td class="px-4 py-3 text-sm">{{ $task->creator->name ?? '-' }}</td>
+                <td class="px-4 py-3 text-sm">{{ $task->assignee->name ?? '-' }}</td>
+                <td class="px-4 py-3 text-sm text-gray-500">{{ $task->created_at->format('Y/m/d') }}</td>
+                <td class="px-4 py-3">
+                    <a href="{{ route('tasks.edit', $task) }}" class="text-sm text-gray-600 hover:text-gray-900">編集</a>
+                </td>
+            </tr>
             @empty
-                <tr>
-                    <td colspan="7" class="px-4 py-8 text-center text-gray-500">タスクがありません。</td>
-                </tr>
+            <tr>
+                <td colspan="7" class="px-4 py-8 text-center text-gray-500">タスクがありません。</td>
+            </tr>
             @endforelse
         </tbody>
     </table>

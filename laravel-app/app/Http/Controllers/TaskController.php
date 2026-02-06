@@ -45,7 +45,7 @@ class TaskController extends Controller
         $validated = $request->validate([
             'title' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
-            'status' => ['required', 'string', 'in:pending,in_progress,approved,completed'],
+            'status' => ['required', 'string', 'in:pending,in_progress,wait_approval,completed'],
             'assigned_to' => ['nullable', 'exists:users,id'],
         ]);
 
@@ -53,6 +53,12 @@ class TaskController extends Controller
         Task::create($validated);
 
         return redirect()->route('tasks.index')->with('message', 'タスクを作成しました。');
+    }
+
+    public function updateStatus(Request $request, Task $task): RedirectResponse
+    {
+        $task->update(['status' => $request->status]);
+        return redirect()->route('tasks.show', $task)->with('message', 'ステータスを更新しました。');
     }
 
     public function edit(Task $task): View
@@ -66,7 +72,7 @@ class TaskController extends Controller
         $validated = $request->validate([
             'title' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
-            'status' => ['required', 'string', 'in:pending,in_progress,approved,completed'],
+            'status' => ['required', 'string', 'in:pending,in_progress,wait_approval,completed'],
             'assigned_to' => ['nullable', 'exists:users,id'],
         ]);
 

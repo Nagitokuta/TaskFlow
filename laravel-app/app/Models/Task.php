@@ -22,7 +22,7 @@ class Task extends Model
 
     public const STATUS_PENDING = 'pending';
     public const STATUS_IN_PROGRESS = 'in_progress';
-    public const STATUS_APPROVED = 'approved';
+    public const STATUS_WAIT_APPROVAL = 'wait_approval';
     public const STATUS_COMPLETED = 'completed';
 
     public static function statusLabels(): array
@@ -30,7 +30,7 @@ class Task extends Model
         return [
             self::STATUS_PENDING => '未対応',
             self::STATUS_IN_PROGRESS => '対応中',
-            self::STATUS_APPROVED => '承認済',
+            self::STATUS_WAIT_APPROVAL => '承認待ち',
             self::STATUS_COMPLETED => '完了',
         ];
     }
