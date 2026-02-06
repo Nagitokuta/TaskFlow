@@ -23,6 +23,7 @@ class RegisterController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'unique:users,email'],
             'password' => ['required', 'string', 'confirmed'],
+            'role' => ['required',],
         ]);
 
         // ユーザー作成
@@ -30,6 +31,7 @@ class RegisterController extends Controller
             'name' => $credentials['name'],
             'email' => $credentials['email'],
             'password' => Hash::make($credentials['password']),
+            'role' => $credentials['role'],
         ]);
 
         // ログイン
