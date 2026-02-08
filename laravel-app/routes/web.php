@@ -17,4 +17,6 @@ Route::middleware('auth')->group(function () {
     Route::resource('tasks', TaskController::class);
     Route::post('tasks/{task}/comments', [CommentController::class, 'store'])->name('tasks.comments.store');
     Route::put('tasks/{task}/status', [TaskController::class, 'updateStatus'])->name('tasks.status.update');
+    Route::get('/your-tasks', [TaskController::class, 'yourTasks'])->name('your_tasks');
+    Route::get('/wait_approval_tasks', [TaskController::class, 'wait_approval_tasks'])->name('wait_approval_tasks');
 });
