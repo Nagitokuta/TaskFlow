@@ -16,7 +16,7 @@
             <input type="text" name="title" id="title" value="{{ old('title') }}" required
                 class="w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
             @error('title')
-                <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+            <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
             @enderror
         </div>
         <div>
@@ -24,30 +24,38 @@
             <textarea name="description" id="description" rows="4"
                 class="w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 focus:border-blue-500 focus:ring-1 focus:ring-blue-500">{{ old('description') }}</textarea>
             @error('description')
-                <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+            <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
             @enderror
         </div>
         <div>
             <label for="status" class="block text-sm font-medium text-gray-700 mb-1">ステータス <span class="text-red-500">*</span></label>
             <select name="status" id="status" class="w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
                 @foreach (\App\Models\Task::statusLabels() as $value => $label)
-                    <option value="{{ $value }}" @selected(old('status', 'pending') === $value)>{{ $label }}</option>
+                <option value="{{ $value }}" @selected(old('status', 'pending' )===$value)>{{ $label }}</option>
                 @endforeach
             </select>
             @error('status')
-                <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+            <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
             @enderror
         </div>
         <div>
             <label for="assigned_to" class="block text-sm font-medium text-gray-700 mb-1">担当者</label>
-            <select name="assigned_to" id="assigned_to" class="w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
-                <option value="">未割当</option>
+            <select
+                name="assigned_to"
+                id="assigned_to"
+                class="w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
+                <option value="" disabled>選択してください</option>
                 @foreach ($users as $user)
-                    <option value="{{ $user->id }}" @selected(old('assigned_to') == $user->id)>{{ $user->name }}</option>
+                <option
+                    value="{{ $user->id }}"
+                    @selected(old('assigned_to', auth()->id()) == $user->id)
+                    >
+                    {{ $user->name }}
+                </option>
                 @endforeach
             </select>
             @error('assigned_to')
-                <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+            <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
             @enderror
         </div>
         <div class="flex gap-3 pt-2">
