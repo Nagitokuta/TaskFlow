@@ -12,7 +12,17 @@ class TaskController extends Controller
 {
     public function index(Request $request): View
     {
-        $query = Task::with(['creator', 'assignee'])->latest();
+        $query = Task::with(['creator', 'assignee'])
+            ->orderByRaw("
+            CASE
+                WHEN status = 'pending' THEN 1
+                WHEN status = 'in_progress' THEN 2
+                WHEN status = 'wait_approval' THEN 3
+                WHEN status = 'completed' THEN 4
+                ELSE 5
+            END
+        ")
+            ->orderByDesc('id');
 
         if ($request->filled('status')) {
             $query->where('status', $request->status);
@@ -46,7 +56,7 @@ class TaskController extends Controller
             'title' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
             'status' => ['required', 'string', 'in:pending,in_progress,wait_approval,completed'],
-            'assigned_to' => ['nullable', 'exists:users,id'],
+            'assigned_to' => ['required', 'exists:users,id'],
         ]);
 
         $validated['created_by'] = $request->user()->id;
@@ -54,6 +64,31 @@ class TaskController extends Controller
 
         return redirect()->route('tasks.index')->with('message', 'タスクを作成しました。');
     }
+
+    public function yourTasks(Request $request)
+    {
+        $userId = $request->user()?->id;
+
+        if (!$userId) {
+            abort(403);
+        }
+
+        $tasks = Task::where('assigned_to', $userId)->get();
+
+        return view('tasks.your_tasks', compact('tasks'));
+    }
+
+    public function wait_approval_tasks(Request $request)
+    {
+        if ($request->user()->role !== 'admin') {
+            abort(403);
+        }
+
+        $tasks = Task::where('status', 'wait_approval')->get();
+
+        return view('tasks.wait_approval_tasks', compact('tasks'));
+    }
+
 
     public function updateStatus(Request $request, Task $task): RedirectResponse
     {
