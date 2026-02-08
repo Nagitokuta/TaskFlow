@@ -19,7 +19,15 @@
                 <div class="flex items-center gap-6">
                     <a href="{{ route('tasks.index') }}" class="text-lg font-semibold text-gray-800">タスク管理</a>
                     <a href="{{ route('tasks.index') }}" class="text-sm text-gray-600 hover:text-gray-900">一覧</a>
+                    @if(auth()->user()->role === 'admin')
                     <a href="{{ route('tasks.create') }}" class="text-sm text-gray-600 hover:text-gray-900">新規作成</a>
+                    @endif
+                    @if(auth()->user()->role === 'admin')
+                    <a href="{{ route('wait_approval_tasks') }}" class="text-sm text-gray-600 hover:text-gray-900">承認待ちのタスク</a>
+                    @endif
+                    @if(auth()->user()->role === 'user')
+                    <a href="{{ route('your_tasks') }}" class="text-sm text-gray-600 hover:text-gray-900">あなたへのタスク</a>
+                    @endif
                 </div>
                 <div class="flex items-center gap-4">
                     <span class="text-sm text-gray-500">
