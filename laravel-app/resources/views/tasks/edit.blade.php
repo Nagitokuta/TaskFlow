@@ -3,6 +3,25 @@
 @section('title', 'タスク編集')
 
 @section('content')
+
+@php
+$canEdit =
+$task->created_by === auth()->id()
+|| auth()->user()?->role === 'admin';
+@endphp
+
+@if(!$canEdit)
+<div class="rounded bg-red-100 p-4 text-red-700">
+    このタスクを編集する権限がありません。
+    <div class="mt-2">
+        <a href="{{ route('tasks.index') }}" class="text-blue-600 underline">
+            一覧に戻る
+        </a>
+    </div>
+</div>
+@php return; @endphp
+@endif
+
 <div class="mb-6">
     <a href="{{ route('tasks.show', $task) }}" class="text-sm text-gray-600 hover:text-gray-900">← 詳細へ</a>
     <h1 class="text-2xl font-bold mt-2">タスク編集</h1>
@@ -17,7 +36,7 @@
             <input type="text" name="title" id="title" value="{{ old('title', $task->title) }}" required
                 class="w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
             @error('title')
-                <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+            <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
             @enderror
         </div>
         <div>
@@ -25,18 +44,18 @@
             <textarea name="description" id="description" rows="4"
                 class="w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 focus:border-blue-500 focus:ring-1 focus:ring-blue-500">{{ old('description', $task->description) }}</textarea>
             @error('description')
-                <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+            <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
             @enderror
         </div>
         <div>
             <label for="status" class="block text-sm font-medium text-gray-700 mb-1">ステータス <span class="text-red-500">*</span></label>
             <select name="status" id="status" class="w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
                 @foreach (\App\Models\Task::statusLabels() as $value => $label)
-                    <option value="{{ $value }}" @selected(old('status', $task->status) === $value)>{{ $label }}</option>
+                <option value="{{ $value }}" @selected(old('status', $task->status) === $value)>{{ $label }}</option>
                 @endforeach
             </select>
             @error('status')
-                <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+            <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
             @enderror
         </div>
         <div>
@@ -44,11 +63,11 @@
             <select name="assigned_to" id="assigned_to" class="w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
                 <option value="">未割当</option>
                 @foreach ($users as $user)
-                    <option value="{{ $user->id }}" @selected(old('assigned_to', $task->assigned_to) == $user->id)>{{ $user->name }}</option>
+                <option value="{{ $user->id }}" @selected(old('assigned_to', $task->assigned_to) == $user->id)>{{ $user->name }}</option>
                 @endforeach
             </select>
             @error('assigned_to')
-                <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+            <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
             @enderror
         </div>
         <div class="flex gap-3 pt-2">

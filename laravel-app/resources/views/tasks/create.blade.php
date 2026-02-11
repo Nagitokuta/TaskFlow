@@ -3,6 +3,23 @@
 @section('title', 'タスク作成')
 
 @section('content')
+
+@php
+$canEdit =auth()->user()?->role === 'admin';
+@endphp
+
+@if(!$canEdit)
+<div class="rounded bg-red-100 p-4 text-red-700">
+    タスクを作成する権限がありません。
+    <div class="mt-2">
+        <a href="{{ route('tasks.index') }}" class="text-blue-600 underline">
+            一覧に戻る
+        </a>
+    </div>
+</div>
+@php return; @endphp
+@endif
+
 <div class="mb-6">
     <a href="{{ route('tasks.index') }}" class="text-sm text-gray-600 hover:text-gray-900">← 一覧へ</a>
     <h1 class="text-2xl font-bold mt-2">タスク作成</h1>

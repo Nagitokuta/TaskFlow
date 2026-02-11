@@ -53,9 +53,16 @@
                 <td class="px-4 py-3 text-sm">{{ $task->creator->name ?? '-' }}</td>
                 <td class="px-4 py-3 text-sm">{{ $task->assignee->name ?? '-' }}</td>
                 <td class="px-4 py-3 text-sm text-gray-500">{{ $task->created_at->format('Y/m/d') }}</td>
+                @if(
+                $task->created_by === auth()->id()
+                )
                 <td class="px-4 py-3">
-                    <a href="{{ route('tasks.edit', $task) }}" class="text-sm text-gray-600 hover:text-gray-900">編集</a>
+                    <a href="{{ route('tasks.edit', $task) }}"
+                        class="text-sm text-gray-600 hover:text-gray-900">
+                        編集
+                    </a>
                 </td>
+                @endif
             </tr>
             @empty
             <tr>
