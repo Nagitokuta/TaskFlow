@@ -28,6 +28,19 @@
                     @if(auth()->user()->role === 'user')
                     <a href="{{ route('your_tasks') }}" class="text-sm text-gray-600 hover:text-gray-900">あなたへのタスク</a>
                     @endif
+                    <a href="{{ route('notifications.index') }}"
+                        class="relative text-sm text-gray-600 hover:text-gray-900">
+                        通知
+
+                        @if(isset($unreadCount) && $unreadCount > 0)
+                        <span class="absolute -top-2
+                     bg-red-500 text-white text-xs
+                     rounded-full w-5 h-5
+                     flex items-center justify-center" style="right: -1.2rem;">
+                            {{ $unreadCount > 99 ? '99+' : $unreadCount }}
+                        </span>
+                        @endif
+                    </a>
                 </div>
                 <div class="flex items-center gap-4">
                     <span class="text-sm text-gray-500">
