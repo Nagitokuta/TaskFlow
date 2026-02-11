@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\TaskController;
+use App\Http\Controllers\NotificationController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
@@ -11,6 +12,8 @@ Route::post('/login', [LoginController::class, 'login']);
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 Route::get('/register', [RegisterController::class, 'showSignupForm'])->name('register');
 Route::post('/signup', [RegisterController::class, 'signup'])->name('signup');
+Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
+Route::patch('/notifications/{id}/read', [NotificationController::class, 'read'])->name('notifications.read');
 
 Route::middleware('auth')->group(function () {
     Route::get('/', fn() => redirect()->route('tasks.index'));
