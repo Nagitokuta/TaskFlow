@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Task;
 use App\Models\User;
+use App\Notifications\TaskAssignedNotification;
+use App\Notifications\TaskWaitApprovalNotification;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Contracts\View\View;
@@ -60,7 +62,9 @@ class TaskController extends Controller
         ]);
 
         $validated['created_by'] = $request->user()->id;
-        Task::create($validated);
+        $task = Task::create($validated);
+        $assignee = User::find($validated['assigned_to']);
+        $assignee->notify(new TaskAssignedNotification($task));
 
         return redirect()->route('tasks.index')->with('message', 'タスクを作成しました。');
     }
@@ -73,7 +77,9 @@ class TaskController extends Controller
             abort(403);
         }
 
-        $tasks = Task::where('assigned_to', $userId)->get();
+        $tasks = Task::where('assigned_to', $userId)
+            ->latest()
+            ->paginate(15);
 
         return view('tasks.your_tasks', compact('tasks'));
     }
@@ -84,7 +90,9 @@ class TaskController extends Controller
             abort(403);
         }
 
-        $tasks = Task::where('status', 'wait_approval')->get();
+        $tasks = Task::where('status', 'wait_approval')
+            ->latest()
+            ->paginate(15);
 
         return view('tasks.wait_approval_tasks', compact('tasks'));
     }
@@ -93,6 +101,13 @@ class TaskController extends Controller
     public function updateStatus(Request $request, Task $task): RedirectResponse
     {
         $task->update(['status' => $request->status]);
+        if ($request->status === 'wait_approval') {
+            $admins = User::where('role', 'admin')->get();
+
+            foreach ($admins as $admin) {
+                $admin->notify(new TaskWaitApprovalNotification($task));
+            }
+        }
         return redirect()->route('tasks.show', $task)->with('message', 'ステータスを更新しました。');
     }
 
@@ -110,6 +125,16 @@ class TaskController extends Controller
             'status' => ['required', 'string', 'in:pending,in_progress,wait_approval,completed'],
             'assigned_to' => ['nullable', 'exists:users,id'],
         ]);
+
+        $user = $request->user();
+        if (
+            $task->created_by !== $user->id
+            && $user->role !== 'admin'
+        ) {
+            return redirect()
+                ->route('tasks.index')
+                ->with('error', '編集権限がありません');
+        }
 
         $task->update($validated);
         return redirect()->route('tasks.show', $task)->with('message', 'タスクを更新しました。');
