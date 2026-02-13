@@ -45,6 +45,19 @@ class Task extends Model
         return $this->belongsTo(User::class, 'assigned_to');
     }
 
+    public function scopeActive($query)
+    {
+        return $query->whereIn('status', [
+            self::STATUS_PENDING,
+            self::STATUS_IN_PROGRESS,
+        ]);
+    }
+
+    public function scopeWaitApproval($query)
+    {
+        return $query->where('status', self::STATUS_WAIT_APPROVAL);
+    }
+
     public function comments(): HasMany
     {
         return $this->hasMany(Comment::class)->orderBy('created_at');

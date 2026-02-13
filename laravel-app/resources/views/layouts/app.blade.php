@@ -20,16 +20,42 @@
                     <a href="{{ route('tasks.index') }}" class="text-lg font-semibold text-gray-800">タスク管理</a>
                     <a href="{{ route('tasks.index') }}" class="text-sm text-gray-600 hover:text-gray-900">一覧</a>
                     @if(auth()->user()->role === 'admin')
-                    <a href="{{ route('wait_approval_tasks') }}" class="text-sm text-gray-600 hover:text-gray-900">承認待ちのタスク</a>
-                    @endif
-                    @if(auth()->user()->role === 'admin')
                     <a href="{{ route('tasks.create') }}" class="text-sm text-gray-600 hover:text-gray-900">新規作成</a>
                     @endif
+                    @if(auth()->user()->role === 'admin')
+                    <a href="{{ route('wait_approval_tasks') }}"
+                        class="relative text-sm text-gray-600 hover:text-gray-900">
+
+                        承認待ちタスク
+
+                        @if(($approvalTaskCount ?? 0) > 0)
+                        <span class="absolute -top-2
+                     bg-red-500 text-white text-xs
+                     rounded-full w-5 h-5
+                     flex items-center justify-center" style="right: -1.2rem;">
+                            {{ $approvalTaskCount }}
+                        </span>
+                        @endif
+                    </a>
+                    @endif
                     @if(auth()->user()->role === 'user')
-                    <a href="{{ route('your_tasks') }}" class="text-sm text-gray-600 hover:text-gray-900">あなたへのタスク</a>
+                    <a href="{{ route('your_tasks') }}"
+                        class="relative text-sm text-gray-600 hover:text-gray-900">
+
+                        あなたへのタスク
+
+                        @if(($pendingTaskCount ?? 0) > 0)
+                        <span class="absolute -top-2
+                     bg-red-500 text-white text-xs
+                     rounded-full w-5 h-5
+                     flex items-center justify-center" style="right: -1.2rem;">
+                            {{ $pendingTaskCount }}
+                        </span>
+                        @endif
+                    </a>
                     @endif
                     <a href="{{ route('notifications.index') }}"
-                        class="relative text-sm text-gray-600 hover:text-gray-900">
+                        class="relative text-sm text-gray-600 ms-3 hover:text-gray-900">
                         通知
 
                         @if(isset($unreadCount) && $unreadCount > 0)
