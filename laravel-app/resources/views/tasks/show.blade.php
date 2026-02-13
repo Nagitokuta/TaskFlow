@@ -40,32 +40,37 @@
             @method('PUT')
             <div>
                 <!--ステータス変更ボタンはこのタスクの担当者にのみ表示-->
-                @if($task->assignee?->id === auth()->user()->id&& $task->status !== 'completed')
                 <!--タスクのステータスがボタンと同じ値ならdisableにする-->
+                <!--タスクのステータスを一度承認待ちにしたらすべてdisableにする-->
+                @php
+                $isLocked = $task->status === \App\Models\Task::STATUS_WAIT_APPROVAL
+                || $task->status === \App\Models\Task::STATUS_COMPLETED;
+                @endphp
+
+                @if($task->assignee?->id === auth()->id())
                 <button
                     type="submit"
                     name="status"
                     value="wait_approval"
-                    @disabled($task->status === 'wait_approval')
+                    @disabled($isLocked)
                     class="mt-2 py-2 px-4 rounded-md text-sm
-                    {{ $task->status === 'wait_approval'
+        {{ $isLocked
             ? 'bg-gray-400 cursor-not-allowed text-white'
             : 'bg-blue-600 hover:bg-blue-700 text-white'
-        }}"
-                    >
+        }}">
                     承認待ちにする
                 </button>
+
                 <button
                     type="submit"
                     name="status"
                     value="in_progress"
-                    @disabled($task->status === 'in_progress')
+                    @disabled($isLocked)
                     class="mt-2 py-2 px-4 rounded-md text-sm
-                    {{ $task->status === 'in_progress'
+        {{ $isLocked
             ? 'bg-gray-400 cursor-not-allowed text-white'
             : 'bg-blue-600 hover:bg-blue-700 text-white'
-        }}"
-                    >
+        }}">
                     対応中にする
                 </button>
                 @endif

@@ -101,6 +101,14 @@ class TaskController extends Controller
     public function updateStatus(Request $request, Task $task): RedirectResponse
     {
         $task->update(['status' => $request->status]);
+
+        if (in_array($task->status, [
+            Task::STATUS_WAIT_APPROVAL,
+            Task::STATUS_COMPLETED
+        ])) {
+            return back()->with('error', 'このタスクは変更できません。');
+        }
+
         if ($request->status === 'wait_approval') {
             $admins = User::where('role', 'admin')->get();
 
