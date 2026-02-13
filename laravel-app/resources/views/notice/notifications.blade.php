@@ -11,7 +11,6 @@
     <table class="min-w-full border border-gray-200 text-sm">
         <thead class="bg-gray-100 text-gray-600">
             <tr>
-                <th class="px-4 py-2 text-left">ID</th>
                 <th class="px-4 py-2 text-left">お知らせ</th>
                 <th class="px-4 py-2 text-left">タスクID</th>
                 <th class="px-4 py-2 text-left">タスクタイトル</th>
@@ -23,12 +22,6 @@
         <tbody class="divide-y divide-gray-200">
             @forelse ($notifications as $notice)
             <tr class="hover:bg-gray-50">
-
-                <!-- ID -->
-                <td class="px-4 py-3">
-                    {{ $notice->notifiable_id }}
-                </td>
-
                 <!-- お知らせ -->
                 <td class="px-4 py-3">
                     {{ $notice->data['message'] }}
