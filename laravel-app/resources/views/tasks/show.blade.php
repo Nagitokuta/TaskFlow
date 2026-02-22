@@ -39,41 +39,45 @@
             @csrf
             @method('PUT')
             <div>
-                <!--ステータス変更ボタンはこのタスクの担当者にのみ表示-->
-                <!--タスクのステータスがボタンと同じ値ならdisableにする-->
-                <!--タスクのステータスを一度承認待ちにしたらすべてdisableにする-->
                 @php
-                $isLocked = $task->status === \App\Models\Task::STATUS_WAIT_APPROVAL
-                || $task->status === \App\Models\Task::STATUS_COMPLETED;
+                $isLocked = in_array($task->status, [
+                \App\Models\Task::STATUS_WAIT_APPROVAL,
+                \App\Models\Task::STATUS_COMPLETED,
+                ]);
                 @endphp
 
                 @if($task->assignee?->id === auth()->id())
+
+                {{-- 承認待ちにする --}}
                 <button
                     type="submit"
                     name="status"
                     value="wait_approval"
-                    @disabled($isLocked)
+                    @disabled($isLocked || $task->status === \App\Models\Task::STATUS_WAIT_APPROVAL)
                     class="mt-2 py-2 px-4 rounded-md text-sm
-        {{ $isLocked
+                    {{ ($isLocked || $task->status === \App\Models\Task::STATUS_WAIT_APPROVAL)
             ? 'bg-gray-400 cursor-not-allowed text-white'
             : 'bg-blue-600 hover:bg-blue-700 text-white'
         }}">
                     承認待ちにする
                 </button>
 
+                {{-- 対応中にする --}}
                 <button
                     type="submit"
                     name="status"
                     value="in_progress"
-                    @disabled($isLocked)
+                    @disabled($isLocked || $task->status === \App\Models\Task::STATUS_IN_PROGRESS)
                     class="mt-2 py-2 px-4 rounded-md text-sm
-        {{ $isLocked
+                    {{ ($isLocked || $task->status === \App\Models\Task::STATUS_IN_PROGRESS)
             ? 'bg-gray-400 cursor-not-allowed text-white'
             : 'bg-blue-600 hover:bg-blue-700 text-white'
         }}">
                     対応中にする
                 </button>
+
                 @endif
+
                 <!--承認するボタンは管理者のみ表示-->
                 @if(auth()->user()->role === 'admin' && $task->status === 'wait_approval')
                 <button type="submit" name="status" value="completed" class="mt-2 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 text-sm">承認する</button>
