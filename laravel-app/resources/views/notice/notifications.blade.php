@@ -11,7 +11,7 @@
     <table class="min-w-full border border-gray-200 text-sm">
         <thead class="bg-gray-100 text-gray-600">
             <tr>
-                <th class="px-4 py-2 text-left">お知らせ</th>
+                <th class="px-4 py-2 text-left">通知</th>
                 <th class="px-4 py-2 text-left">タスクID</th>
                 <th class="px-4 py-2 text-left">タスクタイトル</th>
                 <th class="px-4 py-2 text-left">状態</th>
@@ -83,9 +83,9 @@
 
             </tr>
             @empty
-            <div>
-                <p class="px-4 py-8 text-center text-gray-500">通知がありません。</p>
-            </div>
+            <tr>
+                <td colspan="6" class="px-4 py-8 text-center text-gray-500">通知がありません。</td>
+            </tr>
             @endforelse
         </tbody>
     </table>
