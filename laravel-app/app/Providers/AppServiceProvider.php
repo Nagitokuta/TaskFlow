@@ -5,6 +5,7 @@ namespace App\Providers;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\URL;
 use App\Models\User;
 use App\Models\Task;
 
@@ -34,6 +35,10 @@ class AppServiceProvider extends ServiceProvider
                 $count = $user->pendingAssignedTasks()->count();
 
                 $view->with('pendingTaskCount', $count);
+            }
+
+            if (config('app.env') === 'production') {
+                URL::forceScheme('https');
             }
 
             if ($user->role === 'admin') {
