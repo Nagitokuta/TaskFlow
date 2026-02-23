@@ -22,4 +22,5 @@ Route::middleware('auth')->group(function () {
     Route::get('/wait_approval_tasks', [TaskController::class, 'wait_approval_tasks'])->name('wait_approval_tasks');
     Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
     Route::patch('/notifications/{id}/read', [NotificationController::class, 'read'])->name('notifications.read');
+    Route::patch('/notifications/{id}/hide', [NotificationController::class, 'hide'])->name('notifications.hide');
 });

@@ -16,6 +16,7 @@
                 <th class="px-4 py-2 text-left">タスクタイトル</th>
                 <th class="px-4 py-2 text-left">状態</th>
                 <th class="px-4 py-2 text-left">日付</th>
+                <th class="px-4 py-2 text-left">削除</th>
             </tr>
         </thead>
 
@@ -67,6 +68,17 @@
                     @else
                     -
                     @endif
+                </td>
+
+                <!-- 削除（非表示） -->
+                <td class="px-4 py-3">
+                    <form method="POST" action="{{ route('notifications.hide', $notice->id) }}">
+                        @csrf
+                        @method('PATCH')
+                        <button type="submit" class="text-gray-400 hover:text-red-500">
+                            ✕
+                        </button>
+                    </form>
                 </td>
 
             </tr>

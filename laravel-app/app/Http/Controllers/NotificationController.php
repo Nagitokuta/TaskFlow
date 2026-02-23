@@ -10,7 +10,10 @@ class NotificationController extends Controller
     {
         $user = $request->user();
 
-        $notifications = $user->notifications()->latest()->get();
+        $notifications = $user->notifications()
+            ->whereNull('hidden_at')
+            ->latest()
+            ->get();
 
         $taskIds = $notifications->pluck('data.task_id')->unique();
 
@@ -31,6 +34,21 @@ class NotificationController extends Controller
             ->firstOrFail();
 
         $notification->markAsRead();
+
+        return back();
+    }
+
+    public function hide($id, Request $request)
+    {
+        $notification = $request->user()
+            ->notifications()
+            ->where('id', $id)
+            ->whereNull('hidden_at')
+            ->firstOrFail();
+
+        $notification->update([
+            'hidden_at' => now()
+        ]);
 
         return back();
     }
