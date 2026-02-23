@@ -24,6 +24,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+
+        URL::forceScheme('https');
+
         View::composer('layouts.app', function ($view) {
             $user = request()->user();
             $view->with('unreadCount', $user->unreadNotifications()->count());
@@ -36,8 +39,6 @@ class AppServiceProvider extends ServiceProvider
 
                 $view->with('pendingTaskCount', $count);
             }
-
-            URL::forceScheme('https');
 
             if ($user->role === 'admin') {
                 $approvalCount = Task::waitApproval()->count();
