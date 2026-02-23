@@ -37,9 +37,7 @@ class AppServiceProvider extends ServiceProvider
                 $view->with('pendingTaskCount', $count);
             }
 
-            if (config('app.env') === 'production') {
-                URL::forceScheme('https');
-            }
+            URL::forceScheme('https');
 
             if ($user->role === 'admin') {
                 $approvalCount = Task::waitApproval()->count();
